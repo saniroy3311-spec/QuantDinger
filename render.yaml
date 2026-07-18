@@ -45,3 +45,16 @@ services:
         generateValue: true
       - key: PORT
         value: 10000
+      - key: FRONTEND_URL
+        value: https://quantdinger-dashboard.onrender.com,https://quantdinger-api.onrender.com
+
+  - type: web
+    name: quantdinger-dashboard
+    plan: free
+    env: docker
+    image:
+      url: ghcr.io/brokermr810/quantdinger-frontend:latest
+    envVars:
+      - key: BACKEND_URL
+        value: https://quantdinger-api.onrender.com
+
