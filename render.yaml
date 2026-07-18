@@ -51,7 +51,6 @@ services:
   - type: web
     name: quantdinger-dashboard
     plan: free
-    env: docker
     image:
       url: ghcr.io/brokermr810/quantdinger-frontend:latest
     envVars:
