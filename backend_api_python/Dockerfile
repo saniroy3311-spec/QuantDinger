@@ -86,6 +86,11 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
     && chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# Fix render-start.sh line endings and permissions (for Render deployment)
+RUN if [ -f /app/render-start.sh ]; then \
+      sed -i 's/\r$//' /app/render-start.sh && chmod +x /app/render-start.sh; \
+    fi
+
 RUN mkdir -p logs data/memory \
     && chown -R quantdinger:quantdinger /app/logs /app/data
 
