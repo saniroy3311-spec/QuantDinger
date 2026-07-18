@@ -52,7 +52,8 @@ services:
     name: quantdinger-dashboard
     plan: free
     runtime: image
-    image: ghcr.io/brokermr810/quantdinger-frontend:latest
+    image:
+      url: ghcr.io/brokermr810/quantdinger-frontend:latest
     envVars:
       - key: BACKEND_URL
         value: https://quantdinger-api.onrender.com
