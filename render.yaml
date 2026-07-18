@@ -25,6 +25,16 @@ services:
           name: quantdinger-redis
           type: redis
           property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          name: quantdinger-redis
+          type: redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          name: quantdinger-redis
+          type: redis
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: CREDENTIAL_ENCRYPTION_KEY
