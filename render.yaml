@@ -1,0 +1,112 @@
+databases:
+  - name: quantdinger-db
+    plan: free
+
+services:
+  - type: redis
+    name: quantdinger-redis
+    plan: free
+    ipAllowList: []
+
+  - type: web
+    name: quantdinger-api
+    plan: free
+    env: docker
+    dockerContext: backend_api_python
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: quantdinger-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: quantdinger-redis
+          type: redis
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CREDENTIAL_ENCRYPTION_KEY
+        generateValue: true
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: PORT
+        value: 10000
+
+  - type: worker
+    name: quantdinger-trading-worker
+    plan: free
+    env: docker
+    dockerContext: backend_api_python
+    dockerfilePath: Dockerfile
+    dockerCommand: python -m app.commands.trading_worker
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: quantdinger-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: quantdinger-redis
+          type: redis
+          property: connectionString
+      - key: SECRET_KEY
+        fromService:
+          name: quantdinger-api
+          type: web
+          envVarKey: SECRET_KEY
+      - key: CREDENTIAL_ENCRYPTION_KEY
+        fromService:
+          name: quantdinger-api
+          type: web
+          envVarKey: CREDENTIAL_ENCRYPTION_KEY
+      - key: ADMIN_USER
+        fromService:
+          name: quantdinger-api
+          type: web
+          envVarKey: ADMIN_USER
+      - key: ADMIN_PASSWORD
+        fromService:
+          name: quantdinger-api
+          type: web
+          envVarKey: ADMIN_PASSWORD
+
+  - type: worker
+    name: quantdinger-celery-worker
+    plan: free
+    env: docker
+    dockerContext: backend_api_python
+    dockerfilePath: Dockerfile
+    dockerCommand: celery -A app.celery_app:celery_app worker --loglevel=info
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: quantdinger-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: quantdinger-redis
+          type: redis
+          property: connectionString
+      - key: SECRET_KEY
+        fromService:
+          name: quantdinger-api
+          type: web
+          envVarKey: SECRET_KEY
+      - key: CREDENTIAL_ENCRYPTION_KEY
+        fromService:
+          name: quantdinger-api
+          type: web
+          envVarKey: CREDENTIAL_ENCRYPTION_KEY
+      - key: ADMIN_USER
+        fromService:
+          name: quantdinger-api
+          type: web
+          envVarKey: ADMIN_USER
+      - key: ADMIN_PASSWORD
+        fromService:
+          name: quantdinger-api
+          type: web
+          envVarKey: ADMIN_PASSWORD
