@@ -45,6 +45,18 @@ RUN set -eux; \
       gosu \
     && rm -rf /var/lib/apt/lists/*
 
+# Install TA-Lib C library (required by Python TA-Lib wrapper)
+RUN set -eux; \
+    curl -SL https://github.com/ta-lib/ta-lib/releases/download/v0.6.4/ta-lib-0.6.4-src.tar.gz -o ta-lib.tar.gz; \
+    tar -xzf ta-lib.tar.gz; \
+    cd ta-lib-0.6.4; \
+    ./configure --prefix=/usr; \
+    make -j"$(nproc)"; \
+    make install; \
+    cd ..; \
+    rm -rf ta-lib-0.6.4 ta-lib.tar.gz; \
+    ldconfig
+
 COPY requirements.txt requirements.lock ./
 
 # Pip: when BUILD_REGION=cn, try Aliyun PyPI first; on any failure retry default index.
