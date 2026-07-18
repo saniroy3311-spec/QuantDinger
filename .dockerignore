@@ -9,6 +9,6 @@
 # Optional local clone of the private Vue repo (never required)
 QuantDinger-Vue-src/
 
-# Backend tree not needed for any root-context image
-backend_api_python
+# Backend tree not needed for any root-context image (disabled for Render deploy)
+# backend_api_python
 docker-compose.override.yml
