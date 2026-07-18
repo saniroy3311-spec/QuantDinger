@@ -13,7 +13,7 @@ services:
     plan: free
     env: docker
     dockerContext: backend_api_python
-    dockerfilePath: Dockerfile
+    dockerfilePath: backend_api_python/Dockerfile
     dockerCommand: sh -c "sed -i 's/\r$//' render-start.sh && sh render-start.sh"
     envVars:
       - key: DATABASE_URL
